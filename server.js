@@ -3,15 +3,19 @@ const http = require('http');
 
 const PORT = process.env.PORT || 8080;
 
-const server = http.createServer();
+// 通常のHTTPリクエスト（ブラウザで開いたとき）への応答を追加
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('✅ Wisp Proxy Server is running!\nWebSocket接続を待機しています。');
+});
+
 const wss = new WebSocket.Server({ server });
 
 wss.on('connection', (ws) => {
-    console.log('Client connected');
+    console.log('✅ Client connected via WebSocket');
 
     ws.on('message', (message) => {
-        // 簡易的なエコーサーバー（デモ用）
-        // 本格的なWispサーバーにする場合は wisp-server-node などに置き換えてください
+        // 動作確認用の簡易エコーバック
         ws.send(message); 
     });
 
@@ -21,5 +25,5 @@ wss.on('connection', (ws) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`Wisp proxy server is running on port ${PORT}`);
+    console.log(`🚀 Wisp proxy server is running on port ${PORT}`);
 });
